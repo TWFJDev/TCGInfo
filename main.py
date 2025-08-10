@@ -2,9 +2,6 @@ from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, NoTransition
 from screen_nav import screen_helper
-from kivy.core.window import Window
-
-Window.size = (384, 824)
 
 class DashboardScreen(Screen):
     pass
