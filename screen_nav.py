@@ -1,4 +1,8 @@
 screen_helper = """
+<OneLineIconListItem>:
+    ripple_scale: 0
+    ripple_alpha: 0
+
 ScreenManager:
     DashboardScreen:
     SetsScreen:
@@ -11,20 +15,21 @@ ScreenManager:
     MDNavigationLayout:
         ScreenManager:
             Screen:
-                BoxLayout:
+                MDBoxLayout:
                     orientation: 'vertical'
-
                     MDTopAppBar:
                         title: 'Dashboard'
+                        anchor_title: 'left'
                         left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
                         elevation: 2
-
+                    MDTabs:
+                        id: dashboard_collection_tabs
                     Widget:
 
         MDNavigationDrawer:
             id: nav_drawer
 
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 spacing: '8dp'
                 padding: '8dp'
@@ -47,7 +52,7 @@ ScreenManager:
                             text: 'Dashboard'
                             on_release:
                                 root.manager.current = 'dashboard'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'view-dashboard'
 
@@ -55,7 +60,7 @@ ScreenManager:
                             text: 'Sets'
                             on_release:
                                 root.manager.current = 'sets'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-multiple'
 
@@ -63,7 +68,7 @@ ScreenManager:
                             text: 'Cards'
                             on_release:
                                 root.manager.current = 'cards'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'cards'
 
@@ -71,7 +76,7 @@ ScreenManager:
                             text: 'Products'
                             on_release:
                                 root.manager.current = 'products'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'package-variant'
 
@@ -79,7 +84,7 @@ ScreenManager:
                             text: 'Collection(s)'
                             on_release:
                                 root.manager.current = 'collection'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-plus'
 
@@ -88,17 +93,18 @@ ScreenManager:
     MDNavigationLayout:
         ScreenManager:
             Screen:
-                BoxLayout:
+                MDBoxLayout:
                     orientation: 'vertical'
                     MDTopAppBar:
                         title: 'Sets'
+                        anchor_title: 'left'
                         left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
                         elevation: 2
                     Widget:
 
         MDNavigationDrawer:
             id: nav_drawer
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 spacing: '8dp'
                 padding: '8dp'
@@ -121,7 +127,7 @@ ScreenManager:
                             text: 'Dashboard'
                             on_release:
                                 root.manager.current = 'dashboard'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'view-dashboard'
 
@@ -129,7 +135,7 @@ ScreenManager:
                             text: 'Sets'
                             on_release:
                                 root.manager.current = 'sets'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-multiple'
 
@@ -137,7 +143,7 @@ ScreenManager:
                             text: 'Cards'
                             on_release:
                                 root.manager.current = 'cards'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'cards'
 
@@ -145,7 +151,7 @@ ScreenManager:
                             text: 'Products'
                             on_release:
                                 root.manager.current = 'products'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'package-variant'
 
@@ -153,7 +159,7 @@ ScreenManager:
                             text: 'Collection(s)'
                             on_release:
                                 root.manager.current = 'collection'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-plus'
 
@@ -162,17 +168,18 @@ ScreenManager:
     MDNavigationLayout:
         ScreenManager:
             Screen:
-                BoxLayout:
+                MDBoxLayout:
                     orientation: 'vertical'
                     MDTopAppBar:
                         title: 'Cards'
+                        anchor_title: 'left'
                         left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
                         elevation: 2
                     Widget:
 
         MDNavigationDrawer:
             id: nav_drawer
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 spacing: '8dp'
                 padding: '8dp'
@@ -195,7 +202,7 @@ ScreenManager:
                             text: 'Dashboard'
                             on_release:
                                 root.manager.current = 'dashboard'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'view-dashboard'
 
@@ -203,7 +210,7 @@ ScreenManager:
                             text: 'Sets'
                             on_release:
                                 root.manager.current = 'sets'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-multiple'
 
@@ -211,7 +218,7 @@ ScreenManager:
                             text: 'Cards'
                             on_release:
                                 root.manager.current = 'cards'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'cards'
 
@@ -219,7 +226,7 @@ ScreenManager:
                             text: 'Products'
                             on_release:
                                 root.manager.current = 'products'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'package-variant'
 
@@ -227,7 +234,7 @@ ScreenManager:
                             text: 'Collection(s)'
                             on_release:
                                 root.manager.current = 'collection'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-plus'
 
@@ -236,17 +243,18 @@ ScreenManager:
     MDNavigationLayout:
         ScreenManager:
             Screen:
-                BoxLayout:
+                MDBoxLayout:
                     orientation: 'vertical'
                     MDTopAppBar:
                         title: 'Products'
+                        anchor_title: 'left'
                         left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
                         elevation: 2
                     Widget:
 
         MDNavigationDrawer:
             id: nav_drawer
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 spacing: '8dp'
                 padding: '8dp'
@@ -269,7 +277,7 @@ ScreenManager:
                             text: 'Dashboard'
                             on_release:
                                 root.manager.current = 'dashboard'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'view-dashboard'
 
@@ -277,7 +285,7 @@ ScreenManager:
                             text: 'Sets'
                             on_release:
                                 root.manager.current = 'sets'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-multiple'
 
@@ -285,7 +293,7 @@ ScreenManager:
                             text: 'Cards'
                             on_release:
                                 root.manager.current = 'cards'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'cards'
 
@@ -293,7 +301,7 @@ ScreenManager:
                             text: 'Products'
                             on_release:
                                 root.manager.current = 'products'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'package-variant'
 
@@ -301,7 +309,7 @@ ScreenManager:
                             text: 'Collection(s)'
                             on_release:
                                 root.manager.current = 'collection'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-plus'
 
@@ -310,17 +318,34 @@ ScreenManager:
     MDNavigationLayout:
         ScreenManager:
             Screen:
-                BoxLayout:
+                MDBoxLayout:
                     orientation: 'vertical'
                     MDTopAppBar:
-                        title: 'Collection'
+                        title: 'Collection(s)'
+                        anchor_title: 'left'
                         left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
                         elevation: 2
+                    MDTabs:
+                        Tab:
+                            title: "Home"
+                            MDLabel:
+                                text: "Welcome to the Home Tab"
+                                halign: "center"
+                        Tab:
+                            title: "Profile"
+                            MDLabel:
+                                text: "Your Profile Info Here"
+                                halign: "center"
+                        Tab:
+                            title: "Settings"
+                            MDLabel:
+                                text: "Adjust settings here"
+                                halign: "center"
                     Widget:
 
         MDNavigationDrawer:
             id: nav_drawer
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 spacing: '8dp'
                 padding: '8dp'
@@ -343,7 +368,7 @@ ScreenManager:
                             text: 'Dashboard'
                             on_release:
                                 root.manager.current = 'dashboard'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'view-dashboard'
 
@@ -351,7 +376,7 @@ ScreenManager:
                             text: 'Sets'
                             on_release:
                                 root.manager.current = 'sets'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-multiple'
 
@@ -359,7 +384,7 @@ ScreenManager:
                             text: 'Cards'
                             on_release:
                                 root.manager.current = 'cards'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'cards'
 
@@ -367,7 +392,7 @@ ScreenManager:
                             text: 'Products'
                             on_release:
                                 root.manager.current = 'products'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'package-variant'
 
@@ -375,7 +400,7 @@ ScreenManager:
                             text: 'Collection(s)'
                             on_release:
                                 root.manager.current = 'collection'
-                                nav_drawer.set_state('close')
+                                nav_drawer.set_state("close", animation=False)
                             IconLeftWidget:
                                 icon: 'card-plus'
 """
