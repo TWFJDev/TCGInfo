@@ -96,16 +96,16 @@ class SetsScreen(Screen):
             Thread(target=self.load_data, daemon=True).start()
 
     def load_data(self):
-        time.sleep(2)  # simulate network delay
-        Clock.schedule_once(lambda dt: self.update_info())
-
-    def update_info(self):
-        self.root_layout.clear_widgets()
         try:
             r = requests.get("https://tcgcsv.com/tcgplayer/3/groups")
             all_groups = r.json().get('results', [])
         except Exception:
             all_groups = []
+
+        Clock.schedule_once(lambda dt: self.update_info(all_groups))
+
+    def update_info(self, all_groups):
+        self.root_layout.clear_widgets()
 
         if not all_groups:
             self.root_layout.add_widget(
