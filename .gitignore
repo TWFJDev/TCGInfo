@@ -214,3 +214,6 @@ __marimo__/
 # Buildozer
 .buildozer
 buildozer.spec
+
+# Testing Files
+test.py
