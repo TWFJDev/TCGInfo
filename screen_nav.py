@@ -95,12 +95,17 @@ ScreenManager:
             Screen:
                 MDBoxLayout:
                     orientation: 'vertical'
+
                     MDTopAppBar:
                         title: 'Sets'
                         anchor_title: 'left'
                         left_action_items: [['menu', lambda x: nav_drawer.set_state('open')]]
                         elevation: 2
-                    Widget:
+
+                    ScrollView:
+                        id: scroll_container
+                        size_hint_y: 1
+                        do_scroll_x: False
 
         MDNavigationDrawer:
             id: nav_drawer

@@ -1,18 +1,20 @@
 from kivymd.app import MDApp
-from kivy.lang.builder import Builder
+from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, NoTransition
-from screen_nav import screen_helper
 from kivymd.uix.card import MDCard
 from kivy.metrics import dp
 from kivymd.uix.label import MDLabel
 from kivy.clock import Clock
 from threading import Thread
-import time
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.gridlayout import MDGridLayout
+from kivymd.uix.anchorlayout import MDAnchorLayout
+from screen_nav import screen_helper
+import requests
+import time
+from kivymd.uix.scrollview import ScrollView
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.anchorlayout import MDAnchorLayout
 
 
 class Tab(MDFloatLayout, MDTabsBase):
@@ -43,7 +45,7 @@ class DashboardScreen(Screen):
         self.root_layout.clear_widgets()
 
         for i in range(1, 5):
-            tab = Tab(title=f'Tab {i}')
+            tab = Tab(title=f'Collection {i}')
             self.ids.dashboard_collection_tabs.add_widget(tab)
 
         for i in range(1, 5):
@@ -66,7 +68,93 @@ class DashboardScreen(Screen):
             self.root_layout.add_widget(card)
 
 class SetsScreen(Screen):
-    pass
+    def on_pre_enter(self):
+        if not hasattr(self, 'root_layout'):
+            # ScrollView with MDGridLayout inside
+            self.scrollview = self.ids.scroll_container
+            self.root_layout = MDGridLayout(
+                cols=1,
+                spacing=dp(8),
+                padding=[dp(8), dp(8), dp(8), dp(8)],
+                size_hint_y=None,
+            )
+            self.root_layout.bind(minimum_height=self.root_layout.setter('height'))
+
+            self.label = MDLabel(
+                text='Loading Data...',
+                halign="center",
+                theme_text_color="Primary",
+                font_style="H5",
+                size_hint_y=None,
+                height=dp(40)
+            )
+            self.root_layout.add_widget(self.label)
+
+            self.scrollview.clear_widgets()
+            self.scrollview.add_widget(self.root_layout)
+
+            Thread(target=self.load_data, daemon=True).start()
+
+    def load_data(self):
+        time.sleep(2)  # simulate network delay
+        Clock.schedule_once(lambda dt: self.update_info())
+
+    def update_info(self):
+        self.root_layout.clear_widgets()
+        try:
+            r = requests.get("https://tcgcsv.com/tcgplayer/3/groups")
+            all_groups = r.json().get('results', [])
+        except Exception:
+            all_groups = []
+
+        if not all_groups:
+            self.root_layout.add_widget(
+                MDLabel(
+                    text="Failed to load data.",
+                    halign="center",
+                    theme_text_color="Error",
+                    font_style="H6",
+                    size_hint_y=None,
+                    height=dp(40)
+                )
+            )
+            return
+
+        for group in all_groups:
+            card = MDCard(
+                size_hint=(1, None),
+                height=dp(72),
+                elevation=4,
+                padding=dp(8),
+                radius=[dp(10)],
+            )
+
+            labels_layout = MDAnchorLayout(anchor_x='center', anchor_y='center')
+            box = MDGridLayout(cols=1, spacing=dp(0), size_hint_y=None)
+            box.bind(minimum_height=box.setter('height'))
+
+            set_name = MDLabel(
+                text=group.get('name', ''),
+                halign="center",
+                theme_text_color="Primary",
+                font_style="Body1",
+                size_hint_y=None,
+                height=dp(28),
+            )
+            set_abbreviation = MDLabel(
+                text=group.get('abbreviation', ''),
+                halign="center",
+                theme_text_color="Secondary",
+                font_style="Caption",
+                size_hint_y=None,
+                height=dp(18),
+            )
+
+            box.add_widget(set_name)
+            box.add_widget(set_abbreviation)
+            labels_layout.add_widget(box)
+            card.add_widget(labels_layout)
+            self.root_layout.add_widget(card)
 
 class CardsScreen(Screen):
     pass
