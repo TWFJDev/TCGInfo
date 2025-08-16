@@ -11,10 +11,12 @@ from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.anchorlayout import MDAnchorLayout
 from screen_nav import screen_helper
 import requests
-import time
 from kivymd.uix.scrollview import ScrollView
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.label import MDLabel
+from kivymd.uix.gridlayout import MDGridLayout
 
 
 class Tab(MDFloatLayout, MDTabsBase):
@@ -38,7 +40,6 @@ class DashboardScreen(Screen):
             Thread(target=self.load_data, daemon=True).start()
 
     def load_data(self):
-        time.sleep(5)
         Clock.schedule_once(lambda dt: self.update_info())
 
     def update_info(self):
@@ -69,8 +70,8 @@ class DashboardScreen(Screen):
 
 class SetsScreen(Screen):
     def on_pre_enter(self):
-        if not hasattr(self, 'root_layout'):
-            # ScrollView with MDGridLayout inside
+        if not hasattr(self, 'initialized'):
+            self.initialized = True
             self.scrollview = self.ids.scroll_container
             self.root_layout = MDGridLayout(
                 cols=1,
@@ -80,6 +81,7 @@ class SetsScreen(Screen):
             )
             self.root_layout.bind(minimum_height=self.root_layout.setter('height'))
 
+            # placeholder
             self.label = MDLabel(
                 text='Loading Data...',
                 halign="center",
@@ -93,21 +95,26 @@ class SetsScreen(Screen):
             self.scrollview.clear_widgets()
             self.scrollview.add_widget(self.root_layout)
 
+            # pagination state
+            self.all_groups = []
+            self.current_page = 0
+            self.items_per_page = 10
+
             Thread(target=self.load_data, daemon=True).start()
 
     def load_data(self):
         try:
             r = requests.get("https://tcgcsv.com/tcgplayer/3/groups")
-            all_groups = r.json().get('results', [])
+            self.all_groups = r.json().get('results', [])
         except Exception:
-            all_groups = []
+            self.all_groups = []
 
-        Clock.schedule_once(lambda dt: self.update_info(all_groups))
+        Clock.schedule_once(lambda dt: self.show_page(0))
 
-    def update_info(self, all_groups):
+    def show_page(self, page_index):
         self.root_layout.clear_widgets()
 
-        if not all_groups:
+        if not self.all_groups:
             self.root_layout.add_widget(
                 MDLabel(
                     text="Failed to load data.",
@@ -118,9 +125,15 @@ class SetsScreen(Screen):
                     height=dp(40)
                 )
             )
+            self.root_layout.height = self.root_layout.minimum_height
             return
 
-        for group in all_groups:
+        # pagination slice
+        start = page_index * self.items_per_page
+        end = start + self.items_per_page
+        page_items = self.all_groups[start:end]
+
+        for group in page_items:
             card = MDCard(
                 size_hint=(1, None),
                 height=dp(72),
@@ -155,6 +168,46 @@ class SetsScreen(Screen):
             labels_layout.add_widget(box)
             card.add_widget(labels_layout)
             self.root_layout.add_widget(card)
+
+        total_pages = (len(self.all_groups) + self.items_per_page - 1) // self.items_per_page
+
+        nav_layout = MDGridLayout(
+            cols=3,
+            size_hint_y=None,
+            height=dp(56),
+            padding=[dp(10), dp(10)],
+            spacing=dp(10),
+        )
+
+        prev_btn = MDRaisedButton(
+            text="Previous",
+            disabled=(page_index == 0),
+            on_release=lambda x: self.show_page(page_index - 1)
+        )
+        page_label = MDLabel(
+            text=f"Page {page_index + 1} of {total_pages}",
+            halign="center",
+            valign="middle"
+        )
+        next_btn = MDRaisedButton(
+            text="Next",
+            disabled=(end >= len(self.all_groups)),
+            on_release=lambda x: self.show_page(page_index + 1)
+        )
+
+        nav_layout.add_widget(prev_btn)
+        nav_layout.add_widget(page_label)
+        nav_layout.add_widget(next_btn)
+
+        self.root_layout.add_widget(nav_layout)
+
+        # **Fix for ScrollView: manually set height**
+        total_height = sum([child.height + dp(8) for child in self.root_layout.children])
+        self.root_layout.height = total_height
+
+        # update current page
+        self.current_page = page_index
+
 
 class CardsScreen(Screen):
     pass
