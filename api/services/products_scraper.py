@@ -5,7 +5,7 @@ import json
 import time
 
 # Import local DB models and engine
-from ..models import Product, Base
+from ..models import Product, ExtendedData, Base
 from ..db import engine, SessionLocal
 
 # Ensure tables exist
@@ -21,32 +21,37 @@ def _save_product_to_db(session: Session, item: dict):
     url = item.get("url")
     modified_on = item.get("modifiedOn")
     image_count = item.get("imageCount")
-    presale_info = json.dumps(item.get("presaleInfo", []))
-    extended_data = json.dumps(item.get("extendedData", []))
 
+    # Check if product already exists
     existing = session.query(Product).filter(Product.product_id == product_id).first()
     if existing:
-        existing.name = name
-        existing.clean_name = clean_name
-        existing.image_url = image_url
-        existing.url = url
-        existing.modified_on = modified_on
-        existing.image_count = image_count
-        existing.presale_info = presale_info
-        existing.extended_data = extended_data
-    else:
-        p = Product(
-            product_id=product_id,
-            name=name,
-            clean_name=clean_name,
-            image_url=image_url,
-            url=url,
-            modified_on=modified_on,
-            image_count=image_count,
-            presale_info=presale_info,
-            extended_data=extended_data
-        )
-        session.add(p)
+        return  # Skip duplicates, or you could update fields here
+
+    # Create Product and loop through extendedData
+    product = Product(
+        product_id=product_id,
+        name=name,
+        clean_name=clean_name,
+        image_url=image_url,
+        url=url,
+        modified_on=modified_on,
+        image_count=image_count,
+        extended_data=[
+            ExtendedData(
+                name=ext.get("name"),
+                display_name=ext.get("displayName"),
+                value=ext.get("value"),
+            )
+            for ext in item.get("extendedData", [])
+        ]
+    )
+
+    # Optional: extract CardText for quick access
+    card_text_item = next((ext for ext in item.get("extendedData", []) if ext.get("name") == "CardText"), None)
+    if card_text_item:
+        product.card_text = card_text_item.get("value")
+
+    session.add(product)
     session.commit()
 
 def scrape_group(group_id: int):

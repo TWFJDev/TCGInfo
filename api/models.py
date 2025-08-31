@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, JSON
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
 
 Base = declarative_base()
@@ -14,10 +14,22 @@ class Product(Base):
     url = Column(String)
     modified_on = Column(String)
     image_count = Column(Integer)
-    presale_info = Column(JSON)
-    extended_data = Column(JSON)
+    card_text = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    extended_data = relationship("ExtendedData", back_populates="product", cascade="all, delete-orphan")
+
+class ExtendedData(Base):
+    __tablename__ = "extended_data"
+
+    id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    name = Column(String(100))
+    display_name = Column(String(255))
+    value = Column(Text)  # long text fits your CardText description
+
+    product = relationship("Product", back_populates="extended_data")
 
 class Price(Base):
     __tablename__ = "prices"

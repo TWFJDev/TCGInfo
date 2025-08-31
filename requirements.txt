@@ -1,0 +1,4 @@
+fastapi==0.116.1
+kivymd==1.2.0
+SQLAlchemy==2.0.43
+uvicorn==0.35.0
